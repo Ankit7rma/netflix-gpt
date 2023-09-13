@@ -1,9 +1,12 @@
-
-import "./index.css"
+import Body from "./components/Body";
+import "./index.css";
 function App() {
   return (
-    <div className="text-3xl font-bold">
-    Hello ,Netflix Gpt here
+    <div>
+    <Body/>
+      <div className="text-3xl font-bold text-red-400">
+        Hello ,Netflix Gpt here
+      </div>
     </div>
   );
 }
