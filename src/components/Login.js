@@ -1,12 +1,14 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  // const name = useRef("")
+  const name = useRef("")
+  const navigate = useNavigate();
   const email = useRef(null);
   const password = useRef(null);
   const [errorMessage, setErrorMessage] = useState();
@@ -22,6 +24,17 @@ const Login = () => {
         password.current.value)
         .then((userCredential) => {
           const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current.value,
+             photoURL: "https://avatars.githubusercontent.com/u/126302430?s=400&u=eeaca4bf2b9f714f92960fe221c51fbce43a4816&v=4"
+          }).then(() => {
+            // Profile updated!
+            navigate("/browse")
+          }).catch((error) => {
+            // An error occurred
+            setErrorMessage(error.message)
+          });
+          
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -36,6 +49,7 @@ const Login = () => {
     // Signed in 
     const user = userCredential.user;
    console.log(user)
+   navigate("/browse")
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -66,7 +80,7 @@ const Login = () => {
         </h1>
         {!isSignInForm && (
           <input
-            // ref={name}
+            ref={name}
             type="text"
             placeholder="Name"
             className="p-4 my-3 w-full bg-gray-700 "
