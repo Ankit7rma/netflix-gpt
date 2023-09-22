@@ -7,13 +7,15 @@ import { addGptMoviesResult } from "../utils/gptSlice";
 
 const GptSearchBar = () => {
   const langKey = useSelector((store) => store.config.lang);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const searchText = useRef();
   const searchMoviesTMDB = async (movie) => {
     const data = await fetch(
-      "https://api.themoviedb.org/3/search/movie?query="+movie+"&include_adult=false&language=en-US&page=1" ,
-        API_OPTIONS
+      "https://api.themoviedb.org/3/search/movie?query=" +
+        movie +
+        "&include_adult=false&language=en-US&page=1",
+      API_OPTIONS
     );
     const json = await data.json();
     return json.results;
@@ -33,14 +35,16 @@ const GptSearchBar = () => {
     if (!gptResults.choices) {
       console.log("error");
     }
-    console.log(gptResults.choices?.[0].message.content)
+    console.log(gptResults.choices?.[0].message.content);
     const gptMovies = gptResults.choices?.[0].message.content.split(",");
     // array of movie ,now try to find out tmdb api for each movie result.
     // console.log(gptMovies);
     const promiseArray = gptMovies.map((movie) => searchMoviesTMDB(movie));
     const tmdbResults = await Promise.all(promiseArray);
     console.log(tmdbResults);
-    dispatch(addGptMoviesResult({movieNames:gptMovies,movieResults:tmdbResults}))    
+    dispatch(
+      addGptMoviesResult({ movieNames: gptMovies, movieResults: tmdbResults })
+    );
   };
 
   return (
